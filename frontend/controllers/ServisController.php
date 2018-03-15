@@ -29,7 +29,7 @@ class ServisController extends Controller
 				#'only' => ['index', 'view','create', 'update', 'delete'],
 				'rules' => [
 								[
-        								'actions' => ['create','index','view',],
+        								'actions' => ['create','index','view','validasi'],
         								'allow' => true,
         								'roles' => ['@'],
         						],
@@ -99,8 +99,10 @@ class ServisController extends Controller
         if ($model->load(Yii::$app->request->post()) ) {
 			$plg=Pelanggan::find()->where('User_id=:user',[':user'=>Yii::$app->user->identity->id])->one();
 			//VarDumper::dump($plg,20,true);
+      $model->No_Servis =date('dmys');
 			$model->Pelanggan_id=$plg->id;
 			$model->Status_servis=1;
+      //$model->Teknisi_id=null;
 			$model->Tanggal=Date('Y-m-d H:i:s');
 			#$model->Keterangan='Servis Baru';
 			$model->save();
@@ -167,4 +169,14 @@ class ServisController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+    public function actionValidasi($id)
+      {
+        $model = $this->findModel($id);
+  			$model->Status_servis=3;
+  			#$model->Tanggal_Bayar=Date('Y-m-d H:i:s');
+  			$model->save();
+        Yii::$app->session->setFlash('success', 'Servis Sudah Di Konfirmasi Untuk Penggantian Barang');
+  			return $this->redirect(['view', 'id' => $model->No_Servis]);
+      }
 }

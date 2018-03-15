@@ -9,8 +9,10 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use kartik\mpdf\pdf;
+//use kartik\mpdf\pdf;
 use yii\helpers\Url;
+use yii\helpers\VarDumper;
+use mPDF;
 
 /**
  * PembayaranController implements the CRUD actions for Pembayaran model.
@@ -29,7 +31,7 @@ class PembayaranController extends Controller
 				#'only' => ['index', 'view','create', 'update', 'delete'],
 				'rules' => [
 					[
-							'actions' => ['index','view','create', 'update', 'delete','bayar','report'],
+							'actions' => ['index','view','create', 'update', 'delete','bayar','printlist','printdetail'],
 							'allow' => true,
 							'roles' => ['@'],
 							'matchCallback' => function ($rule, $action) {
@@ -82,13 +84,51 @@ class PembayaranController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Pembayaran();
+    $model = new Pembayaran();
+		$url= 'http://localhost/inventory/web/index.php?r=wsbarang/barang'; //url server ws
+		$ch= curl_init($url); //inisialisasi curl library 
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$result = curl_exec($ch);
+		$barang=json_decode($result);
+		#varDumper::dump(Yii::$app->request->post(),20,true);
+        if ($model->load(Yii::$app->request->post()) ) {
+			#varDumper::dump($model,20,true);
+			$totalharga=0;
+			$namabarang=null;
+			if ($model->Barang!=null){
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+				foreach($model->Barang as $itembarang){
+					$param['id']=$itembarang;
+					$url= 'http://localhost/inventory/web/index.php?r=wsbarang/harga&id='.$itembarang;
+					echo $url;
+					$ch2= curl_init($url);
+					curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+					#curl_setopt($ch2, CURLOPT_POSTFIELDS,$param);
+					$result2 = curl_exec($ch2);
+					$result2=json_decode($result2);
+					#varDumper::dump($result2,20,true);
+
+					#echo $result2->harga;
+					$totalharga+=$result2->harga;
+					$namabarang=$namabarang.' '.$result2->type.' '.$result2->nama.'(Rp '.$result2->harga.')';
+          #varDumper::dump($result2,20,true);
+
+				}
+			}
+
+			if ($model->Status_Kerusakan==1)
+				$totalharga+=50000;
+			else
+			$totalharga+=100000;
+			$model->Total_harga=$totalharga;
+			$model->Barang=$namabarang;
+			$model->save();
+
             return $this->redirect(['view', 'id' => $model->No_transaksi]);
         } else {
             return $this->render('create', [
                 'model' => $model,
+				'barang'=>$barang,
             ]);
         }
     }
@@ -143,20 +183,69 @@ class PembayaranController extends Controller
 
 	public function actionBayar($id)
     {
-        $model = $this->findModel($id);
+      $model = $this->findModel($id);
 			$model->Status_bayar='Sudah';
 			$model->Tanggal_Bayar=Date('Y-m-d H:i:s');
 			$model->save();
 			return $this->redirect(['view', 'id' => $model->No_transaksi]);
     }
 
+    public function actionPrintlist()
+      {
+        $mpdf=new mPDF('','A4-P','','',20,20,20,20,2,2);
+        //$pro=Project::find()->where(['code'=>$model->project])->one();
+        $searchModel = new PembayaranSearch();
+        $dataProvider = $searchModel->search($model->id);
+
+        $stylesheet = file_get_contents('css/print.css');
+        $mpdf->WriteHTML($stylesheet,1);
+        $mpdf->WriteHTML(
+           $this->renderAjax('printlistpembayaran', [
+            'model' => $model,
+            //'pro'=>$pro,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+          ])
+        );
+        $mpdf->Output('List Pembayaran.pdf','D');
+      }
+
+    public function actionPrintdetail($id) {
+      //$cekorderan=Orders::find()->where(['no_servis'=>$id])->one();
+      #$dp=Pembayaran::find()->where(['No_transaksi'=>$dp)->one();
+    		$model = $this->findModel($id);
+    		if ($model!=null){
+    			#if ($model->status==3){
+    				$mpdf=new mPDF('','A5-L','','',2,2,2,2,2,2);
+            #$searchModel = new PembayaranSearch();
+            #$dataProvider = $searchModel->search($model->id);
+
+
+    				$stylesheet = file_get_contents('css/print.css');
+    				$mpdf->WriteHTML($stylesheet,1);
+    				$mpdf->WriteHTML(
+    					 $this->renderAjax('printdetail', [
+    						'model' => $model,
+                #'searchModel' => $searchModel,
+                #'dataProvider' => $dataProvider,
+
+    					])
+    				);
+    				$mpdf->Output('Kuitansi.pdf','D');
+    			}else {
+      			\Yii::$app->getSession()->setFlash('error', 'Kuitansi tidak ditemukan');
+      			return $this->redirect(['view', 'id' => $model->id]);
+      		}
+        }
+        #}
+      #}
     public function actionReport()  {
 
 
-          /*$searchModel = new PembayaranSearch();
+          $searchModel = new PembayaranSearch();
           $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-          return $this->render('index', [
+          /*return $this->render('index', [
               'searchModel' => $searchModel,
               'dataProvider' => $dataProvider,
           ]);*/
@@ -167,9 +256,9 @@ class PembayaranController extends Controller
 
       // get your HTML raw content without any layouts or scripts
     $content = $this->renderPartial('cetak',[
-      //'searchModel' => $searchModel,
-      //'dataProvider' => $dataProvider,
-      'model' =>$this->findModel(12),
+      'searchModel' => $searchModel,
+      'dataProvider' => $dataProvider,
+      //'model' =>$this->findModel(12),
     ]);
 
     // setup kartik\mpdf\Pdf component

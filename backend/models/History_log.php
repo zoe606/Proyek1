@@ -30,6 +30,7 @@ class History_log extends \yii\db\ActiveRecord
             [['No_Servis', 'Tanggal'], 'required'],
             [['No_Servis','Status_servis','Teknisi_id'], 'integer'],
 			#[['Keterangan'], 'String'],
+            #[['updated_by'], 'String'],
             [['Tanggal'], 'safe'],
             [['No_Servis'], 'exist', 'skipOnError' => true, 'targetClass' => Servis::className(), 'targetAttribute' => ['No_Servis' => 'No_Servis']],
 
@@ -66,6 +67,7 @@ class History_log extends \yii\db\ActiveRecord
 			'Status_servis' => 'Status servis',
       'Teknisi_id' => 'Teknisi_id',
 			'Keterangan' => 'Keterangan',
+      'updated_by' => 'Updated By'
         ];
     }
 }

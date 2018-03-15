@@ -19,7 +19,7 @@ class History_logSearch extends History_log
     {
         return [
             [['id', 'No_Servis','Teknisi_id'], 'integer'],
-            [['Tanggal'], 'safe'],
+            [['Tanggal','updated_by'], 'safe'],
         ];
     }
 
@@ -63,6 +63,8 @@ class History_logSearch extends History_log
             'No_Servis' => $this->No_Servis,
             'Tanggal' => $this->Tanggal,
             'Teknisi_id' => $this->Teknisi_id,
+            //'updated_by' => $this->updated_by,
+
         ]);
 
         return $dataProvider;

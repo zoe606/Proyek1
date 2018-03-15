@@ -9,6 +9,8 @@ use backend\models\Pembayaran;
 use backend\models\Servis;
 use backend\models\Pelanggan;
 use yii\db\Query;
+use yii\helpers\VarDumper;
+
 
 
 
@@ -52,6 +54,8 @@ class PembayaranSearch extends Pembayaran
       $plg = Pelanggan::find()->where('User_id=:user',[':user'=>Yii::$app->user->identity->id])->one();
       //$srv = Servis::find()->where('Pelanggan_id=:user',[':user'=>$plg->id]);
       $query = Pembayaran::find()->where('No_servis in (select No_Servis from Servis where Pelanggan_id ='.Yii::$app->user->identity->id.')');
+      #varDumper::dump($query,20,true);
+
     }
 			//$query = new Query;
 			// compose the query

@@ -18,8 +18,8 @@ class TeknisiSearch extends Teknisi
     public function rules()
     {
         return [
-            [['id_teknisi', 'Kontak'], 'integer'],
-            [['Nama', 'Alamat'], 'safe'],
+            [['id_teknisi','user_id'], 'integer'],
+            [['Nama', 'Alamat', 'Kontak','start_time','end_time','lama_kerja'], 'safe'],
         ];
     }
 

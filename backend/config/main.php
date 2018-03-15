@@ -8,9 +8,12 @@ $params = array_merge(
 
 return [
     'id' => 'app-backend',
+    'name'=>'Specta',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
+    'language'=>'id-ID',
+    'timeZone' => 'Asia/Jakarta',
     'modules' => [],
     'components' => [
         'request' => [
@@ -33,6 +36,22 @@ return [
                     'levels' => ['error', 'warning'],
                 ],
             ],
+        ],
+        'formatter' => [
+          'class' => 'yii\i18n\Formatter',
+          'nullDisplay' => '-',
+          'locale' => 'id-ID',
+          'defaultTimeZone' => 'UTC',
+            'timeZone' => 'Asia/Jakarta',
+            'dateFormat' => 'php:d-m-Y',
+            'datetimeFormat' => 'php:d-M-Y H:i:s',
+            'decimalSeparator' => ',',
+            'thousandSeparator' => '.',
+            'currencyCode' => 'Rp ',
+            /*'numberFormatterOptions' => [
+                NumberFormatter::MIN_FRACTION_DIGITS => 0,
+                NumberFormatter::MAX_FRACTION_DIGITS => 2,
+            ],*/
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',

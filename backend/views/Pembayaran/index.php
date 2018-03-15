@@ -13,11 +13,12 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="pembayaran-index">
 
-    <h1><?= Html::encode($this->title) ?>
+    
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <span class="pull-right">
     <p>
-        <?= Html::a(Yii::t('app', 'Create Pembayaran'), ['create'], ['class' => 'btn btn-success']) ?>
+      <?= Html::a(Yii::t('app','Print'), ['printlist'], ['class' => 'btn btn-success']) ?>
+      <?= Html::a(Yii::t('app', 'Create Pembayaran'), ['create'], ['class' => 'btn btn-success']) ?>
           <a class="btn btn-info" href="index.php?r=site%2Findex">Home &raquo;</a>
     </p>
   </span>
@@ -29,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'No_transaksi',
+            //'No_transaksi',
 			'No_Servis',
 			/*'Status_Kerusakan',
 			[
@@ -45,10 +46,15 @@ $this->params['breadcrumbs'][] = $this->title;
                    },
 				'filter' => \yii\helpers\ArrayHelper::map(StatusKerusakan::find()->all(), 'Id', 'Status'),
 			],
-            'Barang',
+          #'Barang',
             'Total_harga',
             'Status_bayar',
-			'Tanggal_Bayar',
+			#'Tanggal_Bayar',
+      /*[
+       'label'=>'Tanggal',
+       'value'=>'Tanggal_Bayar',
+       'format'=>'datetime',
+     ],*/
       //'gambar',
       [
         'attribute'=>'gambar',
@@ -57,12 +63,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
         'value' => function ($viewgambar) {
           //$url = \Yii::getAlias('@backend/web/uploads/').$viewgambar->gambar;
-        $url = 'http://localhost/proyek/backend/web/uploads/'.$viewgambar->gambar;
+        $url = 'http://localhost/proyek1/backend/web/uploads/'.$viewgambar->gambar;
           return Html::img($url, ['alt'=>'gambar','width'=>'70','height'=>'50']);
           }
         ],
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'yii\grid\ActionColumn','template'=>'{view}'],
         ],
     ]); ?>
 </div>

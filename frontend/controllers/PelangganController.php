@@ -40,7 +40,7 @@ class PelangganController extends Controller
 										return Yii::$app->user->identity->isAdmin;
 										}
 								],
-	
+
 				],
 			],
             'verbs' => [
@@ -58,10 +58,10 @@ class PelangganController extends Controller
      */
     public function actionIndex()
     {
-		
+
         $searchModel = new PelangganSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-		
+
 		//return $this->render('index');
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -109,6 +109,7 @@ class PelangganController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+          Yii::$app->session->setFlash('suksess',"");
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
@@ -144,5 +145,10 @@ class PelangganController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionSuksess()
+    {
+      Yii::$app->session->setFlash('suksess', "Pesan dari suksess");
     }
 }

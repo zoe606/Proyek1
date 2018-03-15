@@ -48,8 +48,8 @@ class ServisSearch extends Servis
 		}else{
 			$plg = Pelanggan::find()->where('User_id=:user',[':user'=>Yii::$app->user->identity->id])->one();
 			$query = Servis::find()->where('Pelanggan_id=:user',[':user'=>$plg->id]);
-		} 
-				
+		}
+
 
 
         // add conditions that should always apply here

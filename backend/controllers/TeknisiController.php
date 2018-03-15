@@ -9,6 +9,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use DateTime;
+
 
 /**
  * TeknisiController implements the CRUD actions for Teknisi model.
@@ -21,7 +23,7 @@ class TeknisiController extends Controller
     public function behaviors()
     {
         return [
-		
+
 			'access' => [
 				'class' => \yii\filters\AccessControl::className(),
 				#'only' => ['index', 'view','create', 'update', 'delete'],
@@ -34,7 +36,7 @@ class TeknisiController extends Controller
 								return Yii::$app->user->identity->isAdmin;
 							}
 					],
-	
+
 				],
 			],
             'verbs' => [
@@ -82,7 +84,11 @@ class TeknisiController extends Controller
     {
         $model = new Teknisi();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()))
+        {
+          $model->start_time = Date('Y-m-d');
+          $model->save();
+
             return $this->redirect(['view', 'id' => $model->id_teknisi]);
         } else {
             return $this->render('create', [
@@ -100,8 +106,14 @@ class TeknisiController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        #$time1 = (new DateTime('start_time'))->diff(new DateTime());
+        #$time2 = new DateTime('end_time');
+        #$interval = $time1->diff($time2);
+        if ($model->load(Yii::$app->request->post()))
+        {
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        #$model->lama_kerja=$time1;
+        $model->save();
             return $this->redirect(['view', 'id' => $model->id_teknisi]);
         } else {
             return $this->render('update', [

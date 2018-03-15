@@ -5,6 +5,7 @@ use yii\widgets\DetailView;
 use backend\models\Teknisi;
 use backend\models\Pelanggan;
 use backend\models\StatusServis;
+use kartik\dialog\Dialog;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Servis */
@@ -19,13 +20,22 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->No_Servis], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->No_Servis], [
+        <?php  if ($model->Status_servis!=2){?>
+          <?php  if ($model->Status_servis!=3){?>
+            <?php  if ($model->Status_servis!=4){?>
+
+<?php echo Dialog::widget(['overrideYiiConfirm' => true]);
+      ?>
+        <?= Html::a('Order', ['order', 'id' => $model->No_Servis], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
+                'confirm' => 'Order servisan ini?',
                 'method' => 'post',
             ],
         ]) ?>
+        <?php }?>
+      <?php }?>
+    <?php }?>
     </p>
 
     <?= DetailView::widget([
@@ -51,12 +61,12 @@ $this->params['breadcrumbs'][] = $this->title;
                          },
       				'filter' => \yii\helpers\ArrayHelper::map(StatusServis::find()->all(), 'Status_id', 'Status'),
       			],
-            //'Teknisi_id',
+            'teknisi.Nama',
           /*  [
       				'label'=>'Teknisi',
       				'value'=>'teknisi.nama'
       			],*/
-            [
+            /*[
       				'label'=>'Teknisi',
       				'attribute'=>'Teknisi_id',
       				#'value'=>'user.email',
@@ -64,7 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             return $model->teknisi->Nama;
                          },
       				'filter' => \yii\helpers\ArrayHelper::map(Teknisi::find()->all(), 'id_teknisi', 'Nama'),
-      			],
+      			],*/
             'Tanggal',
         ],
     ]) ?>

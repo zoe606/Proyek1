@@ -14,14 +14,15 @@ use backend\models\StatusServis;
 <div class="servis-form">
 
     <?php $form = ActiveForm::begin(); ?>
-	
+
 	<?php echo $form->field($model, 'Status_servis')
 			->dropDownList(ArrayHelper::map(StatusServis::find()->asArray()->all(),'Status_id','Status'),['prompt'=>'- Pilih -'])
 			->hint('Pilih Status'); ?>
-    
-	<?php echo $form->field($model, 'Teknisi_id')
-			->dropDownList(ArrayHelper::map(Teknisi::find()->asArray()->all(),'id_teknisi','Nama'),['prompt'=>'- Pilih -'])
-			->hint('Pilih Teknisi'); ?>
+      
+      <?php echo $form->field($model, 'Teknisi_id')
+    			->dropDownList(ArrayHelper::map(Teknisi::find()->asArray()->all(),'id_teknisi','Nama'),['prompt'=>'- Pilih -'])
+    			->hint('Pilih Teknisi'); ?>
+
 	<?= $form->field($model, 'keterangan')->textarea(['rows' => 6]) ?>
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

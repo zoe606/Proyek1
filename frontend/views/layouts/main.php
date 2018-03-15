@@ -25,6 +25,7 @@ AppAsset::register($this);
 <body>
 <?php $this->beginBody() ?>
 
+
 <div class="wrap">
     <?php
     NavBar::begin([
@@ -36,9 +37,10 @@ AppAsset::register($this);
     ]);
     $menuItems = [
         ['label' => 'Home', 'url' => ['/site/index']],
-		['label' => 'Pelanggan', 'url' => ['/pelanggan/index'],'visible'=>!Yii::$app->user->isGuest],
-        ['label' => 'Servis', 'url' => ['/servis/index'],'visible'=>!Yii::$app->user->isGuest],
-		['label' => 'Pembayaran', 'url' => ['/pembayaran/index'],'visible'=>!Yii::$app->user->isGuest],
+		#['label' => 'Pelanggan', 'url' => ['/pelanggan/index'],'visible'=>!Yii::$app->user->identity->isAdmin],
+        #['label' => 'Servis', 'url' => ['/servis/index'],'visible'=>!Yii::$app->user->identity->isAdmin],
+		#['label' => 'Pembayaran', 'url' => ['/pembayaran/index'],'visible'=>!Yii::$app->user->identity->isAdmin],
+    #['label' => 'Order', 'url' => ['/order/index'],'visible'=>Yii::$app->user->identity->isAdmin],
         //['label' => 'Contact', 'url' => ['/site/contact']],
     ];
     if (Yii::$app->user->isGuest) {
@@ -47,6 +49,15 @@ AppAsset::register($this);
                 $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
 
     } else {
+      $menuItems[] = [
+        'label' => 'Menu',
+        'items' => [
+          ['label' => 'Pelanggan', 'url' => ['/pelanggan/index']],
+          ['label' => 'Pembayaran', 'url' => ['/pembayaran/index']],
+          ['label' => 'Servis','url' => ['/servis/index']],
+        ],
+    'visible'=>Yii::$app->user->identity->isUser or Yii::$app->user->identity->isAdmin];
+      $menuItems[] = ['label' => 'Order', 'url' => ['/orders/index'],'visible'=>Yii::$app->user->identity->isTeknisi or Yii::$app->user->identity->isAdmin];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(

@@ -28,9 +28,10 @@ class Teknisi extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['Nama', 'Alamat', 'Kontak'], 'required'],
-            [['Kontak'], 'integer'],
-            [['Nama', 'Alamat'], 'string', 'max' => 50],
+            [['Nama', 'Alamat', 'Kontak','user_id'], 'required'],
+            [['Kontak'], 'string', 'max' => 21],
+            [['user_id','lama_kerja'], 'integer'],
+            [['Nama', 'Alamat','start_time','end_time'], 'string', 'max' => 50],
         ];
     }
 
@@ -41,9 +42,20 @@ class Teknisi extends \yii\db\ActiveRecord
     {
         return [
             'id_teknisi' => 'Id Teknisi',
-            'Nama' => 'Nama',
+            'Nama' => 'Nama Teknisi',
             'Alamat' => 'Alamat',
             'Kontak' => 'Kontak',
+            'user_id' => 'Login',
+            'start_time' => 'Mulai Kerja',
+            'end_time' => 'Terakhir Kerja',
+            'lama_kerja' => 'Lama kerja'
         ];
+    }
+
+    public function getKerja()
+    {
+      $time1 = 'start_time';
+      $time2 = 'end_time';
+      $interval = $time1->diff($time2);
     }
 }

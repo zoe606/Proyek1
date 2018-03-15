@@ -19,8 +19,8 @@ class PelangganSearch extends Pelanggan
     public function rules()
     {
         return [
-            [['id', 'Kontak', 'User_id'], 'integer'],
-            [['Nama', 'Alamat'], 'safe'],
+            [['id', 'User_id'], 'integer'],
+            [['Nama', 'Kontak', 'Alamat'], 'safe'],
         ];
     }
 

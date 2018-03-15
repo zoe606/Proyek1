@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use backend\models\User;
+#use yiister\adminlte\widgets\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\PelangganSearch */
@@ -14,13 +15,14 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="pelanggan-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <span class="pull-right">
       <p><a class="btn btn-info" href="index.php?r=site%2Findex">Home &raquo;</a></p>
     </span>
 
-    <?= GridView::widget([
+    <?= GridView::widget(
+      [
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [

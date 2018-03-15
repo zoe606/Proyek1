@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use backend\models\StatusKerusakan;
+use kartik\dialog\Dialog;
+
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Pembayaran */
@@ -16,15 +18,16 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->No_transaksi], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->No_transaksi], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
-                'method' => 'post',
-            ],
-        ]) ?>
-		<?= Html::a(Yii::t('app', 'Bayar'), ['bayar', 'id' => $model->No_transaksi], ['class' => 'btn btn-primary']) ?>
+
+        <?= Html::a(Yii::t('app','Print'), ['printdetail', 'id' => $model->No_transaksi], ['class' => 'btn btn-success']) ?>
+        <?php echo Dialog::widget(['overrideYiiConfirm' => true]); ?>
+		<?= Html::a(Yii::t('app', 'Validasi'), ['bayar', 'id' => $model->No_transaksi], [
+      'class' => 'btn btn-primary',
+      'data' => [
+          'confirm' => 'Validasi Pembayaran ini?',
+          'method' => 'post',
+      ],
+      ]) ?>
     </p>
 
     <?= DetailView::widget([
@@ -32,6 +35,22 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             //'No_transaksi',
             'No_Servis',
+            #'noServis.teknisi.Nama',
+            [
+              'label'=>'Teknisi Yang Menangani',
+              'value'=>function($model){
+                            return $model->noServis->teknisi->Nama;
+                         },
+              'attribute'=>'Teknisi_id'
+            ],
+            #'noServis.nama.Nama',
+            [
+              'label'=>'Pelanggan',
+              'value'=>function($model){
+                            return $model->noServis->nama->Nama;
+                         },
+              'attribute'=>'Teknisi_id'
+            ],
             'Barang',
             'Total_harga',
             //'Status_Kerusakan',
@@ -54,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         'value' => function ($viewgambar) {
           //$url = \Yii::getAlias('@backend/web/uploads/').$viewgambar->gambar;
-        $url = 'http://localhost/proyek/backend/web/uploads/'.$viewgambar->gambar;
+        $url = 'http://localhost/proyek1/backend/web/uploads/'.$viewgambar->gambar;
           return Html::img($url, ['alt'=>'gambar','width'=>'70','height'=>'50']);
           }
         ],

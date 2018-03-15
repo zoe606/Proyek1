@@ -22,13 +22,12 @@ use backend\models\StatusKerusakan;
 
     <?php echo $form->field($model, 'Status_Kerusakan')->label('Status Kerusakan')
       			->dropDownList(ArrayHelper::map(StatusKerusakan::find()->asArray()->all(),'Id','Status'),['prompt'=>'- Pilih -'])
-      			->hint('Pilih Status'); ?>
+      			->hint('Pilih Jenis Kerusakan'); ?>
 
-    <?= $form->field($model, 'Barang')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'Total_harga')->textInput() ?>
-
-
+	<?php echo $form->field($model, 'Barang')->label('Barang')
+      			->dropDownList(ArrayHelper::map($barang,'id','namaharga'),['multiple'=>'multiple'])
+      			->hint('Pilih Barang yang diganti'); ?>
+    <?php #= $form->field($model, 'Barang')->textInput(['maxlength' => true]) ?>
 
 
     <div class="form-group">

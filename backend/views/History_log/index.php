@@ -15,12 +15,12 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="history-log-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <span class="pull-right">
       <p><a class="btn btn-info" href="index.php?r=site%2Findex">Home &raquo;</a></p>
     </span>
-  
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -44,9 +44,22 @@ $this->params['breadcrumbs'][] = $this->title;
       //'Teknisi_id',
       [
         'label'=>'Teknisi',
-        'value'=>'teknisi.Nama'
+        'value'=>'teknisi.Nama',
+        //'attribute' => 'teknisi.Nama',
+        'format'    => 'raw',
       ],
+        /*'value'     => function ($model) {
+               if ($model->Teknisi_id != null) {
+                   return $model->Teknisi_id;
+             //or: return Html::encode($model->some_attribute)
+               } else {
+                   return '-';
+               }
+           },
+        'filter' => \yii\helpers\ArrayHelper::map(Teknisi::find()->all(), 'id_teknisi', 'Nama'),
+      ],*/
 			'Keterangan',
+      'updated_by',
 
             //['class' => 'yii\grid\ActionColumn'],
         ],

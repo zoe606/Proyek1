@@ -30,7 +30,8 @@ class Pelanggan extends \yii\db\ActiveRecord
     {
         return [
             [['Nama', 'Alamat', 'Kontak', 'User_id'], 'required'],
-            [['Kontak', 'User_id'], 'integer'],
+            [['User_id'], 'integer'],
+			[['Kontak'], 'string', 'max' => 21],
             [['Nama'], 'string', 'max' => 50],
             [['Alamat'], 'string', 'max' => 100],
             [['User_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['User_id' => 'id']],

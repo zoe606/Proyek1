@@ -13,12 +13,17 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use backend\models\Pelanggan;
+use common\components\AuthHandler;
+use \yii\helpers\Url;
 
 /**
  * Site controller
  */
 class SiteController extends Controller
 {
+
+	public $successUrl = ''; //bikin variabel successUrl
+
     /**
      * @inheritdoc
      */
@@ -56,6 +61,11 @@ class SiteController extends Controller
     public function actions()
     {
         return [
+			'auth' => [
+						'class' => 'yii\authclient\AuthAction',
+						//'successCallback' => [$this, 'onAuthSuccess'],
+						'successCallback' => [$this, 'successCallback'],
+					],
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],
@@ -65,6 +75,11 @@ class SiteController extends Controller
             ],
         ];
     }
+
+		/*public function onAuthSuccess($client)
+	 {
+			 (new AuthHandler($client))->handle();
+	 }*/
 
     /**
      * Displays homepage.
@@ -149,12 +164,20 @@ class SiteController extends Controller
      */
     public function actionSignup()
   {
-        $model = new SignupForm();
+    $model = new SignupForm();
 		$plg=new Pelanggan();
+
+	// Tambahkan ini aje.. session yang kita buat sebelumnya, MULAI
+	$session = Yii::$app->session;
+	if (!empty($session['attributes'])){
+			$model->username = $session['attributes']['first_name'];
+			$model->email = $session['attributes']['email'];
+	}
+    // SELESAI
         if ($model->load(Yii::$app->request->post())) {
 			$pos=Yii::$app->request->post();
             if ($user = $model->signup()) {
-				
+
 				$plg->Nama=$pos['Pelanggan']['Nama'];
 				$plg->Alamat=$pos['Pelanggan']['Alamat'];
 				$plg->Kontak=$pos['Pelanggan']['Kontak'];
@@ -163,7 +186,7 @@ class SiteController extends Controller
                 if (Yii::$app->getUser()->login($user)) {
                     return $this->goHome();
                 }
-				
+
             }
         }
 		return $this->render('signup', [
@@ -219,4 +242,28 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+
+	public function successCallback($client) {
+  // get user data from client
+  $attributes = $client->getUserAttributes();
+	#die(print_r($attributes));
+  // do some thing with user data. for example with $userAttributes['email']
+
+	$user = \common\models\User::find()
+        ->where([
+            'email'=>$attributes['email'],
+        ])
+        ->one();
+    if(!empty($user)){
+        Yii::$app->user->login($user);
+    }
+    else{
+				//Yii::$app->session->setFlash('danger','Email tidak terdaftar!!!');
+        //Simpen disession attribute user dari Google
+        $session = Yii::$app->session;
+        $session['attributes']=$attributes;
+        // redirect ke form signup, dengan mengset nilai variabell global successUrl
+        $this->successUrl = Yii::$app->response->redirect(Url::to(['signup']));
+		}
+	}
 }

@@ -16,10 +16,10 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="servis-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <span class="pull-right">
-      <p><a class="btn btn-info" href="index.php?r=site%2Findex">Home &raquo;</a></p>
+      <p><a class="btn btn-info" href="index.php?r=servis%2Findex">Home &raquo;</a></p>
     </span>
 
 

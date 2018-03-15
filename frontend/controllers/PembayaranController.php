@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
+use yii\helpers\VarDumper;
 
 
 /**
@@ -107,16 +108,20 @@ class PembayaranController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
-          $imageName = $model->No_transaksi;
-         $gambar = UploadedFile::getInstance($model, 'gambar');
+        $imageName = $model->No_transaksi;
+		    $gambar = UploadedFile::getInstance($model, 'gambar');
          if($model->validate()){
              $model->save();
              if (!empty($gambar)) {
                  $gambar->saveAs(Yii::getAlias('@backend/web/uploads/BuktiPembayaran' ) . $imageName.'.' . $gambar->extension);
                  $model->gambar = 'BuktiPembayaran'.$imageName.'.'.$gambar->extension;
                  $model->save(FALSE);
+				 #VarDumper::dump($gambar,20,true);
+				  //var_dump($gambar);
+              //exit();
              }
          }
+         $model->Tanggal_Bayar=Date('Y-m-d H:i:s');
           $model->save();
             return $this->redirect(['view', 'id' => $model->No_transaksi]);
         } else {

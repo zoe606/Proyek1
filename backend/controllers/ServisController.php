@@ -10,6 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use backend\models\History_log;
+use backend\models\Orders;
 
 /**
  * ServisController implements the CRUD actions for Servis model.
@@ -28,7 +29,7 @@ class ServisController extends Controller
 				#'only' => ['index', 'view','create', 'update', 'delete'],
 				'rules' => [
 					[
-							'actions' => ['index','view','create', 'update', 'delete'],
+							'actions' => ['index','view','create', 'update', 'delete','order'],
 							'allow' => true,
 							'roles' => ['@'],
 							'matchCallback' => function ($rule, $action) {
@@ -105,11 +106,19 @@ class ServisController extends Controller
         if ($model->load(Yii::$app->request->post())) {
 			$pos=Yii::$app->request->post();
 			if ($model->save()){
+        /*$order=new Orders();
+        $order->no_servis=$model->No_Servis;
+        $order->teknisi_id=$model->Teknisi_id;
+        $order->pelanggan_id=$model->Pelanggan_id;
+        $order->status_id=$model->Status_servis;
+        $order->save();*/
+        #$order->
 				$log=new History_log();
 				$log->No_Servis=$model->No_Servis;
 				$log->Tanggal=Date('Y-m-d H:i:s');
 				$log->Status_servis=$model->Status_servis;
         $log->Teknisi_id=$model->Teknisi_id;
+        $log->updated_by=Yii::$app->user->identity->username;
 				$log->Keterangan=$pos['Servis']['keterangan'];
 				$log->save();
 				$model->Tanggal=Date('Y-m-d H:i:s');
@@ -150,5 +159,28 @@ class ServisController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionOrder($id)
+      {
+        $model = $this->findModel($id);
+        $cekorderan=Orders::find()->where(['no_servis'=>$id])->one();
+    		if ($cekorderan!=null){
+    			Yii::$app->session->setFlash('error', 'Order Sudah di buat, tidak bisa buat baru');
+    			return $this->redirect(['view', 'id' => $model->No_Servis]);
+    		}
+        Yii::$app->session->setFlash('success', 'Order suksess dibuat');
+    		#$model = new Orders();
+
+      $pos=Yii::$app->request->post();
+      if ($model->save()){
+        $order=new Orders();
+        $order->no_servis=$model->No_Servis;
+        $order->teknisi_id=$model->Teknisi_id;
+        $order->pelanggan_id=$model->Pelanggan_id;
+        $order->status_id=$model->Status_servis;
+        $order->save();
+      }
+      return $this->redirect(['view', 'id' => $model->No_Servis]);
     }
 }

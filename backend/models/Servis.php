@@ -34,9 +34,10 @@ class Servis extends \yii\db\ActiveRecord
             [['Deskripsikan_kerusakan'], 'string'],
             [['Status_servis', 'Teknisi_id', 'Pelanggan_id'], 'integer'],
             [['Pelanggan_id'], 'exist', 'skipOnError' => true, 'targetClass' => Pelanggan::className(), 'targetAttribute' => ['Pelanggan_id' => 'id']],
+						#[['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Orders::className(), 'targetAttribute' => ['order_id' => 'id']],
             [['Status_servis'], 'exist', 'skipOnError' => true, 'targetClass' => StatusServis::className(), 'targetAttribute' => ['Status_servis' => 'status_id']],
             [['Teknisi_id'], 'exist', 'skipOnError' => true, 'targetClass' => Teknisi::className(), 'targetAttribute' => ['Teknisi_id' => 'id_teknisi']],
-			[['Tanggal'], 'string'],
+						[['Tanggal'], 'string'],
         ];
     }
 
@@ -50,6 +51,7 @@ class Servis extends \yii\db\ActiveRecord
             'Deskripsikan_kerusakan' => 'Deskripsikan Kerusakan',
             'Status_servis' => 'Status Servis',
             'Teknisi_id' => 'Teknisi id',
+						#'order_id' => 'Nomor Order',
             'Pelanggan_id' => 'Pelanggan ID',
 						'Tanggal' => 'Tanggal',
         ];
@@ -80,6 +82,11 @@ class Servis extends \yii\db\ActiveRecord
 			return $this->hasOne(Teknisi::className(),['id_teknisi' => 'Teknisi_id']);
 		else
 			return null;
+	}
+
+	public function getOrders()
+	{
+			return $this->hasOne(Orders::className(), ['no_servis' => 'No_Servis']);
 	}
 
 

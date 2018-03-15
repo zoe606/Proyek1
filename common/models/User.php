@@ -26,11 +26,25 @@ class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
+    const ROLE_USER=0;
+    const ROLE_ADMIN=1;
+    const ROLE_TEKNISI=2;
+
 	public function getIsAdmin()
 	{
-		Return $this->username == 'admin';
+		return $this->role == self::ROLE_ADMIN;
 	}
 
+  public function getIsTeknisi()
+	{
+		return $this->role == self::ROLE_TEKNISI;
+	}
+
+  public function getIsUser()
+	{
+		return $this->role == self::ROLE_USER;
+	}
+	#return static::findOne(['username' => $username, 'role' => self::ROLE_ADMIN]);
 
     /**
      * @inheritdoc
@@ -146,6 +160,7 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->auth_key;
     }
 
+
     /**
      * @inheritdoc
      */
@@ -197,5 +212,10 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    public function getAuths()
+    {
+        return $this->hasMany(Auth::className(), ['user_id' => 'id']);
     }
 }

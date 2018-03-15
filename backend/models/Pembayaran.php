@@ -32,9 +32,10 @@ class Pembayaran extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['Barang', 'Total_harga', 'Status_Kerusakan', 'No_Servis'], 'required'],
+            [['Status_Kerusakan', 'No_Servis'], 'required'],
             [['Total_harga', 'Status_Kerusakan', 'No_Servis'], 'integer'],
-            [['Barang'], 'string', 'max' => 45],
+            #[['Barang'], 'string', 'max' => 45],
+			[['Barang'], 'safe'],
 			      [['Status_bayar'], 'string', 'max' => 6],
 			      [['Tanggal_Bayar'], 'string', 'max' => 20],
             [['No_Servis'], 'exist', 'skipOnError' => true, 'targetClass' => Servis::className(), 'targetAttribute' => ['No_Servis' => 'No_Servis']],
@@ -73,6 +74,11 @@ class Pembayaran extends \yii\db\ActiveRecord
   public function getImageurl()
   {
   return \Yii::$app->request->BaseUrl.'@backend/web/uploads/BuktiPembayaran' . $No_transaksi->gambar;
+  }
+
+  public function getNoServis()
+  {
+      return $this->hasOne(Servis::className(), ['No_Servis' => 'No_Servis']);
   }
 
 
